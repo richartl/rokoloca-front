@@ -1,1 +1,1 @@
-export { default as MainPlayerContainer } from './MainPlayerContainer'
+export { default as MainPlayerContainer } from './MainPlayerContainer/index.js'
