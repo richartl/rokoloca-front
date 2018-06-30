@@ -1,8 +1,8 @@
-import { combineReducers } from 'redux'
-import counter from './counter'
+import { combineReducers } from 'redux';
+import { playlists } from './playlists';
 
 const rootReducer = combineReducers({
-  counter,
+  playlists
 })
 
 export default rootReducer

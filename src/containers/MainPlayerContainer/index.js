@@ -1,6 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { NavBar } from 'components'
+import {connect} from 'react-redux';
+import { bindActionCreators } from 'redux'
+import * as PlaylistActions from '../../actions/playlists';
 import ReactPlayer from 'react-player'
 import actionCable from 'actioncable'
 import './index.css'
@@ -16,10 +19,11 @@ class MainPlayerContainer extends React.Component {
     },
     {
       connected: () => {
-        console.log('Conected!');
+        this.props.playlistsActions.fetchPlaylist('a05b9d29-8d84-4f99-b7ad-d180c8b7be96');
       },
       received: (data) => {
         console.log(data);
+        this.props.playlistsActions.fetchPlaylist('a05b9d29-8d84-4f99-b7ad-d180c8b7be96');
       },
       create: function(chatContent) {
         this.perform('create', {
@@ -34,6 +38,16 @@ class MainPlayerContainer extends React.Component {
   }
 
   render() {
+    let list_items = '';
+    if (!this.props.playlists.isFetching) {
+      list_items = this.props.playlists.current_playlist.included.map((song, idx) => {
+        return (
+          <li key={idx} className='playlist--list-item'>
+            {song.attributes.url}
+          </li>
+        )
+      });
+    }
     return (
       <div>
         <NavBar/>
@@ -51,18 +65,7 @@ class MainPlayerContainer extends React.Component {
                 <div className='col col-10'>
                   <div className='playlist'>
                     <ul className='playlist--list'>
-                      <li className='playlist--list-item'>
-                        Song Name
-                      </li>
-                      <li className='playlist--list-item'>
-                        Song Name
-                      </li>
-                      <li className='playlist--list-item'>
-                        Song Name
-                      </li>
-                      <li className='playlist--list-item'>
-                        Song Name
-                      </li>
+                      {list_items}
                     </ul>
                   </div>
                 </div>
@@ -76,4 +79,19 @@ class MainPlayerContainer extends React.Component {
 
 }
 
-export default MainPlayerContainer;
+const mapStateToProps = state => {
+  return {
+    playlists: state.playlists
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    playlistsActions: bindActionCreators(PlaylistActions, dispatch)
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MainPlayerContainer);
